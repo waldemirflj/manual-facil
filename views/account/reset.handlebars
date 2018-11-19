@@ -1,0 +1,27 @@
+<div class="container">
+  {{#if messages.success}}
+    <div class="text-success">
+      {{#each messages.success}}
+        <div>{{msg}}</div>
+      {{/each}}
+    </div>
+  {{/if}}
+  {{#if messages.error}}
+    <div class="text-danger">
+      {{#each messages.error}}
+        <div>{{msg}}</div>
+      {{/each}}
+    </div>
+  {{/if}}
+
+
+  <form class="form-signin col-md-4 offset-md-4 col-sm-8 offset-sm-2 mt-5" method="POST">
+  <h4 class="h3 mb-3 font-weight-normal">Reset Senha</h4>
+    <label for="password" class="sr-only">Nova Senha</label>
+    <input type="password" name="password" id="password" class="form-control" placeholder="Nova Senha" autofocus>
+    <label for="confirm" class="sr-only">Confirme a Senha</label>
+    <input type="password" name="confirm" id="confirm" class="form-control" placeholder="Confirme a Senha">
+    <br>
+    <button type="submit" class="btn btn-lg btn-black btn-block">Change Password</button>
+  </form>
+</div>

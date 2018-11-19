@@ -1,0 +1,34 @@
+<nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+    <div class="container">
+    <!---<a class="navbar-brand" href="/">Manual Fácil</a>--->
+    <button class="navbar-toggler" type="button" onclick="if(getElementById('navbarResponsive').style.display == 'block'){getElementById('navbarResponsive').style.display = 'none';}else{getElementById('navbarResponsive').style.display = 'block';}">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+        {{#if user}}
+        <li class="nav-item">
+            <a class="nav-link" href="/manual">Manual</a>
+        </li>
+
+        {{#if user.canPost}}
+        <li class="nav-item">
+            <a class="nav-link" href="/manual/create">Novo Manual</a>
+        </li>
+        {{/if}}
+        {{#if user.isAdmin}}
+        <li class="nav-item">
+            <a class="nav-link" href="/users">Usuários</a>
+        </li>
+        {{/if}}
+        <li class="nav-item">
+            <a class="nav-link" href="/account">Minha Conta</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/logout">Logout</a>
+        </li>
+        {{/if}}
+        </ul>
+    </div>
+    </div>
+</nav>

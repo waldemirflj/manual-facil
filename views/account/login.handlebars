@@ -1,0 +1,51 @@
+<div class="container text-center">
+  {{#if messages.error}}
+    <div class="text-danger">
+      {{#each messages.error}}
+        <div>{{msg}}</div>
+      {{/each}}
+    </div>
+  {{/if}}
+
+  <script>
+    document.getElementsByTagName('nav')[0].hidden = 'hidden'
+
+  </script>
+
+  <style>
+    #LoginHome{
+      float: right;
+      margin-top: 70px;
+      background-color: #fff;
+      padding: 20px;
+      
+      opacity: 0.8;
+      filter: alpha(opacity=80);
+      
+      width: 500px;
+      min-width: 250px;
+      border-radius: 15px 50px;
+    }
+
+  </style>
+
+  <img src="/images/logoFull.png" style="margin-top:70px; margin-left: -50px; margin-right: 50px; min-width:250px; width:550px; height: 358px; min-height: 163px;"/>
+
+  <div id="LoginHome">
+    <!--col-md-4 offset-md-4 col-sm-8 offset-sm-2 mt-5-->
+    <form class="form-signin" method="POST">
+    <h1 class="h3 mb-3 font-weight-normal">Login</h1>
+      <label for="email" class="sr-only">Email</label>
+      <input type="email" name="email" id="email" class="form-control" placeholder="Email" autofocus>
+      <br />
+      <label for="password" class="sr-only">Senha</label>
+      <input type="password" name="password" id="password" class="form-control" placeholder="Senha">
+      <p><a href="/forgot">Esqueceu sua senha?</a></p>
+      <button type="submit" class="btn btn-lg btn-black btn-block" style="background-color: #185285; font-weight: bold; color: #fff;">Entrar</button>
+    </form>
+    <hr>
+
+    <p>Não tem uma conta? <a href="/signup">Cadastre-se</a></p>
+    <br />
+  <div>
+</div>

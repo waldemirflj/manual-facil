@@ -1,0 +1,48 @@
+<div class="container mt-2 mb-4" style="background-color: #fff; padding: 20px;">
+  {{#if messages.success}}
+  <div class="text-success">
+    {{#each messages.success}}
+    <div>{{msg}}</div>
+    {{/each}}
+  </div>
+  {{/if}} {{#if messages.error}}
+  <div class="text-danger">
+    {{#each messages.error}}
+    <div>{{msg}}</div>
+    {{/each}}
+  </div>
+  {{/if}}
+
+  <main></main>
+  <h2>Manual {{title}} - {{caption}}{{#unless isActive}} -- <small style="color:#F55">Inativo</small>{{/unless}}</h2>
+
+        {{#if canPost}}
+        <div style="float:right; width: 270px;">
+        <a class="list-group-item list-group-item-action" href="/manual/edit/{{_id}}" style="background-color: #185285; font-weight: bold; color: #fff;float:left; width: 130px; height: 30px; text-align: center; padding: 4px; text-decoration:none;">Editar Manual</a>
+        <form method="POST" onsubmit="return confirm('Você realmente deseja deletar este manual?');">
+            <button class="list-group-item list-group-item-action" type="submit" style="background-color: #f03c3c; font-weight: bold; color: #fff; float:right; border: none;  width: 130px; height: 30px; text-align: center; padding: 4px; cursor:pointer;">Deletar Manual</button>
+        </form>
+        </div>
+        {{/if}}
+  <h3><small>{{company}}</small></h3>
+  
+
+  <div class="float-sm-left mr-4" style="margin-top:20px;">
+    <div class="list-group list-group-flush">
+      
+      {{#each chapters.data}}
+        <a href="#{{idd}}" class="list-group-item list-group-item-action">{{title}}</a>
+      {{/each}}
+    </div>
+  </div>
+
+  <div class="ml-2" style="max-width: 95vw; overflow:auto; margin-top:40px;">
+    {{#each chapters.data}}
+      <div id="{{idd}}">
+        <h6>{{order}} - {{title}}</h6>
+        <div>{{{description}}}</div><br/>
+      </div>
+    {{/each}}
+  </div>
+  <br/><br/>
+</div>

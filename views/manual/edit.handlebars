@@ -1,0 +1,63 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+<div class="container mt-2 mb-4" style="background-color: #fff; padding: 20px;>
+  {{#if messages.success}}
+  <div class="text-success">
+    {{#each messages.success}}
+    <div>{{msg}}</div>
+    {{/each}}
+  </div>
+  {{/if}} {{#if messages.error}}
+  <div class="text-danger">
+    {{#each messages.error}}
+    <div>{{msg}}</div>
+    {{/each}}
+  </div>
+  {{/if}}
+
+  <h1 class="col-sm-12 pt-4">{{company}}</h1>
+  <div class="float-sm-left mr-4">
+    <div class="list-group list-group-flush">
+      {{#each chapters.data}}
+        <a href="#{{_id}}" class="list-group-item list-group-item-action">{{title}}</a>
+      {{/each}}
+    </div>
+  </div>
+  <div class="ml-2" style="max-width: 95vw; overflow:auto;">
+    <form method="POST">
+      <div class="form-group">
+        <label for="isActive">Ativo?</label>
+        <div class="btn-group btn-group" data-toggle="buttons"><label class="btn"><input type="checkbox" name="isActive" id="isActive" value="{{isActive}}"{{#if isActive}} checked{{/if}} onclick="this.value=this.checked;"><i class="fa fa-square-o fa-2x"></i><i class="fa fa-check-square-o fa-2x"></i><span></span></label></div>
+      </div>
+      <div class="form-group">
+        <label for="title">Título</label>
+        <input type="text" class="form-control" name="title" id="title" value="{{title}}">
+      </div>
+      <div class="form-group">
+        <label for="caption">Subtítulo</label>
+        <input type="text" class="form-control" name="caption" id="caption" value="{{caption}}">
+      </div>
+      <div class="form-group">
+        <button type="submit" class="btn btn-dark my-2">Salvar</button>
+        <a class="btn btn-dark my-2" href="/manual/newChapter/{{idd}}">Adicionar Capitulo</a>
+      </div>
+    </form>
+  <!--    <div class="form-group">
+      <label for="description">Descrição</label>
+      {{!-- <textarea class="form-control" name="description" id="description" rows="7">{{description}}</textarea> --}}
+      {{>editor}}
+    </div> -->
+    {{#each chapters.data}}
+      <div class="form-group" id="{{_id}}">
+        <label for="container">{{order}} - {{title}}</label>
+        <div class="container">{{{description}}}</div>
+        <form method="POST" action="/manual/editRM" onsubmit="return confirm('Você realmente deseja deletar este manual?');"><input type="hidden" name="chapID" id="chapID" value="{{_id}}"><input type="hidden" name="manID" id="manID" value="{{manId}}">
+        <a class="btn btn-dark my-2" href="/manual/editChapter/{{manId}}/{{_id}}">Editar Capitulo</a>
+        <button class="btn btn-dark my-2" type="submit">Deletar</button></form>
+      </div>
+    {{/each}}
+  </div>
+</div>
+<script>
+  sessionStorage.clear();
+  console.log('sessionStorage.clear()')
+</script>

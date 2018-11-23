@@ -41,7 +41,7 @@
     </div>
   {{/if}}
 
-  <h2>
+  <h>
     {{title}} - {{caption}}{{#unless isActive}} -- <small style="color:#F55">Inativo</small>{{/unless}}
   </h2>
 
@@ -80,7 +80,7 @@
   <div class="ml-2">
     {{#each chapters.data}}
       <div id="{{idd}}">
-        <h6>{{order}} - {{title}}</h6>
+        <h2>{{order}} - {{title}}</h2>
         <div id="description">{{{description}}}</div><br/>
       </div>
     {{/each}}

@@ -1,3 +1,30 @@
+<style>
+  ._2Em1 {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  @media only screen and (max-width: 767px) {
+    ._2Em1 {
+      display: block;
+      justify-content: space-between;
+    }
+
+    ._2Em1 #selecionarCapitulo {
+      margin-bottom: 20px;
+    }
+  }
+</style>
+
+<div class="container text-center">
+  {{#if messages.error}}
+    <div class="text-danger">
+      {{#each messages.error}}
+        <div>{{msg}}</div>
+      {{/each}}
+    </div>
+  {{/if}}
+</div>
 <div class="container mt-2 mb-4" style="background-color: #fff; padding: 20px;">
   {{#if messages.success}}
     <div class="text-success">
@@ -18,28 +45,39 @@
     {{title}} - {{caption}}{{#unless isActive}} -- <small style="color:#F55">Inativo</small>{{/unless}}
   </h2>
 
-  {{#if canPost}}
-    <div style="float:right; width: 270px;">
-      <a class="list-group-item list-group-item-action" href="/manual/edit/{{_id}}" style="background-color: #185285; font-weight: bold; color: #fff;float:left; width: 130px; height: 30px; text-align: center; padding: 4px; text-decoration:none;">Editar Manual</a>
-      <form method="POST" onsubmit="return confirm('Você realmente deseja deletar este manual?');">
-        <button class="list-group-item list-group-item-action" type="submit" style="background-color: #f03c3c; font-weight: bold; color: #fff; float:right; border: none;  width: 130px; height: 30px; text-align: center; padding: 4px; cursor:pointer;">Deletar Manual</button>
-      </form>
-    </div>
-  {{/if}}
-
   <h3>
     <small>{{company}}</small>
   </h3>
+  <br> 
 
-  <div class="float-sm-left mr-4" style="margin-top:20px;">
+  {{#if canPost}}
+    <div class="_2Em1">
+      <div>
+        <select id="selecionarCapitulo" class="form-control">
+          <option>Selecione seu capítulo</option>
+          {{#each chapters.data}}
+            <option value="{{ idd }}">{{ title }}</option>
+          {{/each}}
+        </select>
+      </div>
+      <form method="POST" onsubmit="return confirm('Você realmente deseja deletar este manual?');" style="display: flex; justify-content: flex-end;">
+        <a class="list-group-item list-group-item-action" href="/manual/edit/{{_id}}" style="background-color: #185285; font-weight: bold; color: #fff;float:left; width: 130px; height: 30px; text-align: center; padding: 4px; text-decoration:none; margin-right: 10px;">Editar Manual</a>
+        <button class="list-group-item list-group-item-action" type="submit" style="background-color: #f03c3c; font-weight: bold; color: #fff; border: none; width: 130px; height: 30px; text-align: center; padding: 4px; cursor:pointer;">Deletar Manual</button>
+      </form>
+    </div>
+    <br >
+    <br >
+  {{/if}}
+
+  {{!-- <div>
     <div class="list-group list-group-flush">    
       {{#each chapters.data}}
         <a href="#{{idd}}" class="list-group-item list-group-item-action">{{title}}</a>
       {{/each}}
     </div>
-  </div>
+  </div> --}}
 
-  <div class="ml-2" style="max-width: 95vw; overflow:auto; margin-top:40px;">
+  <div class="ml-2">
     {{#each chapters.data}}
       <div id="{{idd}}">
         <h6>{{order}} - {{title}}</h6>
@@ -53,8 +91,17 @@
 <script>
   $( document ).ready(function() {
     $('#description a')
-      .each((i, v) => {
-        $(v).attr('target', '_blank')
+      .each((i, v) => $(v).attr('target', '_blank'))
+
+    $('#selecionarCapitulo')
+      .change(function() {
+        $( "select option:selected" )
+          .each(function(i, v) {
+            let url = window.location.href
+                url = url.split('#')[0]
+
+            window.location = `${url}#${$(v).val()}`
+          })
       })
   })
 </script>

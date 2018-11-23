@@ -139,7 +139,13 @@ app.post('/manual/newChapter/:id', userController.ensureAuthenticated, userContr
 app.post('/upload', userController.ensureAuthenticated, userController.ensureCanPost, multer(multerConfig).single('photo'), function(req, res){
   console.log('IT WORKSSSSSSSSS');
   console.log(req.file.path);
-  res.send(req.file.path.replace('/usr/src/app/public', req.protocol + '://' + req.get('host')));
+  console.log('-----------');
+
+  let file = req.file.path.split('/').pop()
+      file = `/images/${file}`
+
+  res.send(file);
+  // res.send(req.file.path.replace('/usr/src/app/public', req.protocol + '://' + req.get('host')));
   //res.send(req.file.path.replace('/home/kofttt/Documents/Projects/dockernodemongo/public', req.protocol + '://' + req.get('host') ));
 });
 

@@ -1,5 +1,4 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
-<div class="container mt-2 mb-4" style="background-color: #fff; padding: 20px;>
+<div class="container mt-2 mb-4" style="background-color: #fff; padding: 20px;">
   {{#if messages.success}}
   <div class="text-success">
     {{#each messages.success}}
@@ -34,81 +33,9 @@
     </div>
     <div class="form-group">
       <label for="description">Descrição</label>
-      {{!-- <textarea class="form-control" name="description" id="description" rows="7"></textarea> --}}
       {{>editor}}
     </div>
     <div class="form-group">
       <button type="submit" class="btn btn-dark my-2">Salvar</button>
     </div>
   </form>
-  
-  <div id="prompt" class="prompt-container">
-  <div class="prompt">
-    <h2>Adicionar Imagem</h2>
-    <form action="/upload" class="form-inline" id="imgupload" enctype="multipart/form-data" method="POST">
-      <input type="file" class="form-control" id="photo" name="photo" />
-      <input type="submit" class="btn btn-outline-dark" name="Upload" value="Enviar Imagem"/>
-    </form>
-    <input type="text" class="form-control" name="input" id="promptInput" placeholder="Coloque a URL da imagem aqui" autofocus><br>
-    <button id="btn-ok">Adicionar</button>
-    <button id="btn-cancel" >Cancelar</button>
-  </div>
-</div>
-</div>
-
-<script>
-$("#cTitle").change(() => {
-    sessionStorage.setItem('title', $("#cTitle").val());
-});
-$("#editor_area").on('DOMSubtreeModified', () => {
-  sessionStorage.setItem('description', $("#editor_area").text());
-});
-
-$("#cTitle").val(sessionStorage.getItem('title'));
-$("#editor_area").text(sessionStorage.getItem('description'));
-document.getElementById("textBox").innerHTML = sessionStorage.getItem('description');
-
-$("#prompt").hide();
-$("#btn-cancel").on("click", function(){
-  $("#prompt").fadeOut();
-  $('#promptInput').val('');
-});
-$("#btn-ok").on("click", function(){
-  $("#prompt").fadeOut();
-  var addImg = document.createElement('img');
-  addImg.className = 'maxSizeImage';
-  addImg.setAttribute('src', $('#promptInput').val())
-  rangeCaret.insertNode( addImg );
-  $('#promptInput').val('');
-});
-
-
-$('#imgupload').on('submit',(function(e) {
-  e.preventDefault();
-  var formData = new FormData(this);
-
-  $.ajax({
-    type:'POST',
-    url: $(this).attr('action'),
-    data:formData,
-    cache:false,
-    contentType: false,
-    processData: false,
-    success:function(data){
-      console.log("success");
-      console.log(data);
-      $("#photo").val('');
-      $("#promptInput").val(data);
-      $("#btn-ok").click();
-      document.getElementById('textBox').focus();
-    },
-    error: function(data){
-      console.log("error");
-      console.log(data);
-      $("#photo").val('');
-    }
-  });
-}));
-
-document.getElementById('textBox').focus();
-</script>

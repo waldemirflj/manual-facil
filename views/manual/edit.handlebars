@@ -1,5 +1,4 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
-<div class="container mt-2 mb-4" style="background-color: #fff; padding: 20px;>
+<div class="container mt-2 mb-4" style="background-color: #fff; padding: 20px;">
   {{#if messages.success}}
   <div class="text-success">
     {{#each messages.success}}
@@ -41,11 +40,6 @@
         <a class="btn btn-dark my-2" href="/manual/newChapter/{{idd}}">Adicionar Capitulo</a>
       </div>
     </form>
-  <!--    <div class="form-group">
-      <label for="description">Descrição</label>
-      {{!-- <textarea class="form-control" name="description" id="description" rows="7">{{description}}</textarea> --}}
-      {{>editor}}
-    </div> -->
     {{#each chapters.data}}
       <div class="form-group" id="{{_id}}">
         <label for="container">{{order}} - {{title}}</label>
@@ -57,6 +51,7 @@
     {{/each}}
   </div>
 </div>
+
 <script>
   sessionStorage.clear();
   console.log('sessionStorage.clear()')

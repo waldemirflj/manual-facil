@@ -1,0 +1,11 @@
+{
+    "cwd": "__dirname",
+    "ext": "js, json",
+    "delay": 1000,
+    "verbose": true,
+    "watch": [],
+    "ignore": [
+      "./node_modules",
+      "nodemon.json"
+    ]
+  }

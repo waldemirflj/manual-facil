@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "myapp",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "start:dev": "./node_modules/.bin/nodemon ./server.js --config nodemon.json"
   },
   "dependencies": {
     "async": "^1.5.2",
@@ -24,7 +25,9 @@
     "passport": "^0.3.2",
     "passport-local": "^1.0.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "nodemon": "^1.18.6"
+  },
   "engines": {
     "node": "6.1.0"
   }

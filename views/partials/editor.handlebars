@@ -1,12 +1,3 @@
-{{!-- <link rel="stylesheet" href="/css/wysiwyg.css">
-  <div class="main">
-    <div id="editor_panel"></div>  
-    <textarea name="description" id="editor_area">
-      {{description}}
-    </textarea>
-  </div>
-<script src="/js/wysiwyg.js"></script> --}}
-
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/froala-editor@2.5.1/css/froala_editor.pkgd.min.css" />
@@ -28,11 +19,76 @@
 <script>
   $(function() {
     $('#editor_area').froalaEditor({
-      // Set the file upload URL.
-      imageUploadURL: 'upload',
-      imageUploadParams: {
-        id: 'my_editor'
-      }
+      documentReady: true,
+      // Set the image upload parameter.
+      imageUploadParam: 'photo',
+
+      // Set the image upload URL.
+      imageUploadURL: '/upload',
+
+      // Additional upload params.
+      //imageUploadParams: {
+      //  id: 'my_editor'
+      //},
+
+      // Set request type.
+      imageUploadMethod: 'POST',
+
+      // Set max image size to 1MB.
+      imageMaxSize: 1 * 1024 * 1024,
+
+      // Allow to upload PNG and JPG.
+      imageAllowedTypes: ['jpeg', 'jpg', 'png']
     })
+    .on('froalaEditor.image.beforeUpload', function (e, editor, images) {
+      console.log('Return false if you want to stop the image upload.')
+    })
+    .on('froalaEditor.image.uploaded', function (e, editor, response) {
+      console.log('Image was uploaded to the server.')
+    })
+    .on('froalaEditor.image.inserted', function (e, editor, $img, response) {
+      console.log('Image was inserted in the editor.')
+    })
+    .on('froalaEditor.image.replaced', function (e, editor, $img, response) {
+      console.log('Image was replaced in the editor.')
+    })
+    .on('froalaEditor.image.error', function (e, editor, error, response) {
+      // Bad link.
+      if (error.code == 1) {
+        console.log('Bad link.')
+      }
+
+      // No link in upload response.
+      else if (error.code == 2) {
+        console.log('No link in upload response.')
+      }
+
+      // Error during image upload.
+      else if (error.code == 3) {
+        console.log('Error during image upload.')
+      }
+
+      // Parsing response failed.
+      else if (error.code == 4) {
+        console.log('Parsing response failed.')
+      }
+
+      // Image too text-large.
+      else if (error.code == 5) { 
+        console.log('Image too text-large.')
+      }
+
+      // Invalid image type.
+      else if (error.code == 6) {
+        console.log('Invalid image type.')
+      }
+
+      // Image can be uploaded only to same domain in IE 8 and IE 9.
+      else if (error.code == 7) {
+        console.log('Image can be uploaded only to same domain in IE 8 and IE 9.')
+      }
+
+      // Response contains the original server response to the request if available.
+    });
   })
 </script>

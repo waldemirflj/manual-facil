@@ -12,23 +12,20 @@ var dotenv = require('dotenv');
 var exphbs = require('express-handlebars');
 var mongoose = require('mongoose');
 var passport = require('passport');
+var app = express();
 
 // Load environment variables from .env file
 dotenv.load();
+
+// Passport OAuth strategies
+require('./config/passport');
 
 // Controllers
 var HomeController = require('./controllers/home');
 var userController = require('./controllers/user');
 var manualController = require('./controllers/manual');
 
-// Passport OAuth strategies
-require('./config/passport');
-
-var app = express();
-
-
 mongoose.connect('mongodb://' + process.env.MONGODB);
-//mongoose.connect('mongodb://');
 mongoose.connection.on('error', function() {
   console.log('MongoDB Connection Error. Please make sure that MongoDB is running.');
   process.exit(1);
@@ -52,6 +49,8 @@ var hbs = exphbs.create({
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 app.set('port', process.env.PORT || 3000);
+app.use(express.static(path.join(__dirname, 'public')));
+
 app.use(compression());
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -66,45 +65,6 @@ app.use(function(req, res, next) {
   res.locals.user = req.user;
   next();
 });
-app.use(express.static(path.join(__dirname, 'public')));
-
-var multerConfig = {
-
-  //specify diskStorage (another option is memory)
-  storage: multer.diskStorage({
-
-    //specify destination
-    destination: function(req, file, next){
-      next(null, path.join(__dirname, 'public/images'));
-    },
-
-    //specify the filename to be unique
-    filename: function(req, file, next){
-      console.log(file);
-      //get the file mimetype ie 'image/jpeg' split and prefer the second value ie'jpeg'
-      var ext = file.mimetype.split('/')[1];
-      //set the file fieldname to a unique name containing the original name, current datetime and the extension.
-      next(null, file.fieldname + '-' + Date.now() + '.'+ext);
-    }
-  }),
-
-  // filter out and prevent non-image files.
-  fileFilter: function(req, file, next){
-        if(!file){
-          next();
-        }
-
-      // only permit image mimetypes
-      var image = file.mimetype.startsWith('image/');
-      if(image){
-        console.log('photo uploaded');
-        next(null, true);
-      }else{
-        console.log("file not supported")
-        return next();
-      }
-  }
-};
 
 app.get('/', userController.ensureAuthenticated, HomeController.index);
 app.get('/users', userController.ensureAuthenticated, userController.ensureAdmin, userController.usersGet);
@@ -136,24 +96,35 @@ app.get('/manual/editChapter/:id/:chapID', userController.ensureAuthenticated, u
 app.post('/manual/editChapter/:id/:chapID', userController.ensureAuthenticated, userController.ensureCanPost, manualController.manualEditChapterPut);
 app.get('/manual/newChapter/:id', userController.ensureAuthenticated, userController.ensureCanPost, manualController.manualAddChapterGet);
 app.post('/manual/newChapter/:id', userController.ensureAuthenticated, userController.ensureCanPost, manualController.manualAddChapterPost);
+
+var multerConfig = {
+  storage: multer.diskStorage({
+    //specify destination
+    destination: function(req, file, next){
+      next(null, path.join(__dirname, 'public/upload'));
+    },
+
+    //specify the filename to be unique
+    filename: function(req, file, next){
+      var ext = file.mimetype.split('/')[1];
+      next(null, file.fieldname + '-' + Date.now() + '.'+ext);
+    }
+  })
+};
+
 app.post('/upload', userController.ensureAuthenticated, userController.ensureCanPost, multer(multerConfig).single('photo'), function(req, res){
-  console.log('IT WORKSSSSSSSSS');
-  console.log(req.file.path);
-  console.log('-----------');
-
   let file = req.file.path.split('/').pop()
-      file = `/images/${file}`
+      file = `${req.protocol}://${req.get('host')}/upload/${file}`
 
-  res.send(file);
-  // res.send(req.file.path.replace('/usr/src/app/public', req.protocol + '://' + req.get('host')));
-  //res.send(req.file.path.replace('/home/kofttt/Documents/Projects/dockernodemongo/public', req.protocol + '://' + req.get('host') ));
+  res.send({
+    link: file
+  });
 });
 
 
 // Production error handler
 if (app.get('env') === 'production') {
   app.use(function(err, req, res, next) {
-    console.error(err.stack);
     res.sendStatus(err.status || 500);
   });
 }

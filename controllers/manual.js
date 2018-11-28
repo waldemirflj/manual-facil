@@ -260,22 +260,25 @@ exports.manualEditDelete = function (req, res) {
  * GET /manual/editChapter/:id/:chapID
  */
 exports.manualEditChapterGet = function (req, res) {
+  const subDoc = req.params.chapID 
+    ? true
+    : false
+
   Manual.findOne({_id: req.params.id, "chapter._id":req.params.chapID},{"chapter.$": 1}).exec(function(err, manual){
-    if(!err){
-      res.render('manual/editChapter',{
-        title: manual.title,
-        caption: manual.caption,
-        order: manual.chapter[0].order,
-        cTitle: manual.chapter[0].title,
-        description: manual.chapter[0].description
-      });
-      //  res.send(manual);
-    }else{
+    if(err) {
       req.flash('error', err);
-      res.redirect('/manual/edit/' + req.params.id);
-      // res.send(err);
+      res.redirect('/manual/edit/' + req.params.id); 
     }
-  });
+
+    res.render('manual/editChapter',{
+      subDoc,
+      title: manual.title,
+      caption: manual.caption,
+      order: manual.chapter[0].order,
+      cTitle: manual.chapter[0].title,
+      description: manual.chapter[0].description
+    })
+  })
 }
 
 /**
@@ -283,22 +286,36 @@ exports.manualEditChapterGet = function (req, res) {
 */
 exports.manualEditChapterPut = function (req, res) {
   var checkOrder = true
-  Manual.findOne({_id: req.params.id}, function(errr, man){
-    if(!errr){
-      var arrOrder = [parseInt(req.body.order)];
-      for(var i=0; i < man.chapter.length; i++){
-        if(man.chapter[i]._id == req.params.chapID){
-          if(man.chapter[i].order == parseInt(req.body.order)){
-            checkOrder = false
+  const { action } = req.body
+  
+  if (action === 'update') {
+    return Manual.findOne({_id: req.params.id}, function(errr, man){
+      if(!errr){
+        var arrOrder = [parseInt(req.body.order)];
+        for(var i=0; i < man.chapter.length; i++){
+          if(man.chapter[i]._id == req.params.chapID){
+            if(man.chapter[i].order == parseInt(req.body.order)){
+              checkOrder = false
+            }
           }
+          arrOrder.push(man.chapter[i].order);
         }
-        arrOrder.push(man.chapter[i].order);
-      }
-
-      if(!!checkOrder){
-        if(firstDuplicate(arrOrder) > 0){
-          req.flash('error', { msg: 'Número do Capitulo já cadastrado. '});
-          res.redirect('/manual/editChapter/'+req.params.id+'/'+req.params.chapID);
+  
+        if(!!checkOrder){
+          if(firstDuplicate(arrOrder) > 0){
+            req.flash('error', { msg: 'Número do Capitulo já cadastrado. '});
+            res.redirect('/manual/editChapter/'+req.params.id+'/'+req.params.chapID);
+          }else{
+            Manual.update({_id: req.params.id, "chapter._id":req.params.chapID}, { $set: {"chapter.$.order":req.body.order, "chapter.$.title":req.body.cTitle, "chapter.$.description":req.body.description}}, function (err, manual) {
+              if (!err) {
+                req.flash('success', { msg: 'Capitulo alterado com sucesso ! ' });
+                res.redirect('/manual/edit/'+req.params.id);
+              }else{
+                req.flash('error', err);
+                res.redirect('/manual/edit/' + req.params.id);
+              }
+            });
+          }
         }else{
           Manual.update({_id: req.params.id, "chapter._id":req.params.chapID}, { $set: {"chapter.$.order":req.body.order, "chapter.$.title":req.body.cTitle, "chapter.$.description":req.body.description}}, function (err, manual) {
             if (!err) {
@@ -311,21 +328,31 @@ exports.manualEditChapterPut = function (req, res) {
           });
         }
       }else{
-        Manual.update({_id: req.params.id, "chapter._id":req.params.chapID}, { $set: {"chapter.$.order":req.body.order, "chapter.$.title":req.body.cTitle, "chapter.$.description":req.body.description}}, function (err, manual) {
-          if (!err) {
-            req.flash('success', { msg: 'Capitulo alterado com sucesso ! ' });
-            res.redirect('/manual/edit/'+req.params.id);
-          }else{
-            req.flash('error', err);
-            res.redirect('/manual/edit/' + req.params.id);
-          }
-        });
+        req.flash('error', errr);
+        res.redirect('/manual/edit/'+req.params.id);
       }
-    }else{
-      req.flash('error', errr);
-      res.redirect('/manual/edit/'+req.params.id);
+    });
+  }
+
+  return Manual.update(
+    { _id: req.params.id },
+    { $pull: {
+        chapter: {
+          _id: req.params.chapID
+        }
+      }
+    }, 
+    
+    function(err, done) {
+      if(err) {
+        req.flash('error', err);
+        res.redirect('/manual/show/' + req.params.id );
+      }
+
+      req.flash('success', { msg: 'Capitulo removido !! ' });
+      res.redirect('/manual/show/' + req.params.id );
     }
-  });
+  )
 }
 
 /**

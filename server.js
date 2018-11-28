@@ -91,7 +91,7 @@ app.get('/manual/show/:id', userController.ensureAuthenticated, manualController
 app.post('/manual/show/:id', userController.ensureAuthenticated, userController.ensureCanPost, manualController.manualShowDelete);
 app.get('/manual/edit/:id', userController.ensureAuthenticated, userController.ensureCanPost, manualController.manualEditGet);
 app.post('/manual/edit/:id', userController.ensureAuthenticated, userController.ensureCanPost, manualController.manualEditPut);
-app.post('/manual/editRM', userController.ensureAuthenticated, userController.ensureCanPost, manualController.manualEditDelete);
+// app.post('/manual/editRM', userController.ensureAuthenticated, userController.ensureCanPost, manualController.manualEditDelete);
 app.get('/manual/newChapter/:id', userController.ensureAuthenticated, userController.ensureCanPost, manualController.manualAddChapterGet);
 app.post('/manual/newChapter/:id', userController.ensureAuthenticated, userController.ensureCanPost, manualController.manualAddChapterPost);
 app.get('/manual/editChapter/:id/:chapID', userController.ensureAuthenticated, userController.ensureCanPost, manualController.manualEditChapterGet);

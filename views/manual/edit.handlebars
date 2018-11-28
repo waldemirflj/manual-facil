@@ -40,13 +40,30 @@
         <a class="btn btn-dark my-2" href="/manual/newChapter/{{idd}}">Adicionar Capitulo</a>
       </div>
     </form>
+
     {{#each chapters.data}}
       <div class="form-group" id="{{_id}}">
         <label for="container">{{order}} - {{title}}</label>
         <div class="container">{{{description}}}</div>
-        <form method="POST" action="/manual/editRM" onsubmit="return confirm('Você realmente deseja deletar este manual?');"><input type="hidden" name="chapID" id="chapID" value="{{_id}}"><input type="hidden" name="manID" id="manID" value="{{manId}}">
-        <a class="btn btn-dark my-2" href="/manual/editChapter/{{manId}}/{{_id}}">Editar Capitulo</a>
-        <button class="btn btn-dark my-2" type="submit">Deletar</button></form>
+        {{#each subcaputulo}}
+          <br>
+          <div>
+            <b>{{ order }} - {{ title }}</b>
+            {{{ description }}}
+            <a class="btn btn-dark my-2" href="/manual/editChapter/{{manId}}/{{__id}}/adicionar-sub/{{_id}}">Editar</a>
+          </div>
+          <br>
+        {{/each}}
+        
+        <a class="btn btn-dark my-2" href="/manual/editChapter/{{manId}}/{{_id}}">Editar</a>
+        <a class="btn btn-dark my-2" href="/manual/editChapter/{{manId}}/{{_id}}/adicionar-sub">Adicionar Subcapítulo</a>
+        
+        {{!-- <form method="POST" action="/manual/editRM" onsubmit="return confirm('Você realmente deseja deletar este manual?');">
+          <input type="hidden" name="chapID" id="chapID" value="{{_id}}"><input type="hidden" name="manID" id="manID" value="{{manId}}">
+          <a class="btn btn-dark my-2" href="/manual/editChapter/{{manId}}/{{_id}}">Editar Capitulo</a>
+          <a class="btn btn-dark my-2" href="/manual/editChapter/{{manId}}/{{_id}}/adicionar-sub">Adicionar Sub Capitulo</a>
+          <button class="btn btn-dark my-2" type="submit">Deletar</button>
+        </form> --}}
       </div>
     {{/each}}
   </div>

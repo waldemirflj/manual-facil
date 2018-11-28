@@ -9,7 +9,12 @@ var manualSchema = new mongoose.Schema({
   chapter: [{
     order: Number,
     title: String,
-    description: String
+    description: String,
+    subcaputulo: [{
+      order: Number,
+      title: String,
+      description: String
+    }],
   }],
   updated_at: { type: Date, default: Date.now }
 });

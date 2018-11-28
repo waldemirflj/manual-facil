@@ -73,27 +73,13 @@
     {{#each chapters.data}}
       <div id="{{idd}}">
         <h2>{{order}} - {{title}}</h2>
-        <div id="description">{{{description}}}</div><br/>
+        <div id="description">{{{description}}}</div>
+        <br/>
+        {{#each subcaputulo}}
+          <b>{{order}} - {{title}}</b>
+          {{{ description }}}
+        {{/each}}
       </div>
     {{/each}}
   </div>
 </div>
-
-
-<script>
-  $( document ).ready(function() {
-    $('#description a')
-      .each((i, v) => $(v).attr('target', '_blank'))
-
-    $('#selecionarCapitulo')
-      .change(function() {
-        $( "select option:selected" )
-          .each(function(i, v) {
-            let url = window.location.href
-                url = url.split('#')[0]
-
-            window.location = `${url}#${$(v).val()}`
-          })
-      })
-  })
-</script>

@@ -60,8 +60,6 @@ exports.manualListSearchGet = function(req, res) {
   });
 }
 
-// db.manuals.find({chapter: {$elemMatch: {order: 4}}}).pretty() -- use this example to search inside chapters
-
 /**
  * GET /create
  */
@@ -119,29 +117,39 @@ exports.manualCreatePost = function (req, res) {
  */
 exports.manualShowGet = function (req, res) {
   Manual.findOne({_id: req.params.id}).exec(function(err, manual){
-    if(!err){
-      var Chapters = {data:[]};
-      for(var i=0; i < manual.chapter.length; i++){
-        Chapters.data.push({idd: manual.chapter[i]._id, title:manual.chapter[i].title, description:manual.chapter[i].description, order:manual.chapter[i].order});
-        console.log(Chapters.data[i].title);
-        console.log(Chapters.data[i].order);
-      }
-      Chapters.data = Chapters.data.sort(function(obj1, obj2) {return obj1.order - obj2.order});
-      console.log(Chapters);
-      res.render('manual/show',{
-        title: manual.title,
-        company: manual.company,
-        caption: manual.caption,
-        isActive: manual.isActive,
-        _id: manual._id,
-        chapters: Chapters,
-        canPost: req.user.canPost
-      });
-    }else{
+    if(err){
       req.flash('error', err);
       res.redirect('/manual/show/' + req.params.id);
     }
-  });
+
+    var Chapters = {
+      data:[]
+    };
+      
+    for(var i=0; i < manual.chapter.length; i++){
+      Chapters.data.push({
+        idd: manual.chapter[i]._id, 
+        order: manual.chapter[i].order,
+        title: manual.chapter[i].title, 
+        description: manual.chapter[i].description,
+        subcaputulo: manual.chapter[i].subcaputulo
+      });
+    }
+
+    Chapters.data = Chapters.data.sort(function(obj1, obj2) {
+      return obj1.order - obj2.order
+    })
+    
+    res.render('manual/show',{
+      _id: manual._id,
+      title: manual.title,
+      company: manual.company,
+      caption: manual.caption,
+      isActive: manual.isActive,
+      chapters: Chapters,
+      canPost: req.user.canPost
+    })
+  })
 }
 
 /**
@@ -166,24 +174,53 @@ exports.manualShowDelete = function (req, res) {
  */
 exports.manualEditGet = function (req, res) {
   Manual.findOne({_id: req.params.id}).exec(function(err, manual){
-    if(!err){
-      var Chapters = {data:[]};
-      for(var i=0; i < manual.chapter.length; i++){
-        Chapters.data.push({title:manual.chapter[i].title, description:manual.chapter[i].description, _id:manual.chapter[i]._id, manId: manual._id, order:manual.chapter[i].order});
-      }
-      Chapters.data = Chapters.data.sort(function(obj1, obj2) {return obj1.order - obj2.order});
-      res.render('manual/edit',{
-        idd: manual._id,
-        title: manual.title,
-        company: manual.company,
-        caption: manual.caption,
-        isActive: manual.isActive,
-        chapters: Chapters
-      });
-    }else{
+    if(err){
       req.flash('error', err);
       res.redirect('/manual/show/' + req.params.id);
     }
+
+    var Chapters = {
+      data:[],
+      subcaputulo: []
+    }
+
+    for(var i=0; i < manual.chapter.length; i++){
+      const __id = manual.chapter[i]._id
+      const manId = manual._id
+
+      manual.chapter[i].subcaputulo.forEach((v, i) => {
+        Chapters.subcaputulo.push({
+          __id,
+          manId,
+          _id: v._id,
+          order: v.order,
+          title: v.title,
+          description: v.description,
+        })
+      })
+
+      Chapters.data.push({
+        _id: manual.chapter[i]._id,
+        manId: manual._id, 
+        order:manual.chapter[i].order,
+        title: manual.chapter[i].title, 
+        description: manual.chapter[i].description, 
+        subcaputulo: Chapters.subcaputulo
+      })
+    }
+
+    Chapters.data = Chapters.data.sort(function(obj1, obj2) {
+      return obj1.order - obj2.order
+    });
+    
+    res.render('manual/edit',{
+      idd: manual._id,
+      title: manual.title,
+      company: manual.company,
+      caption: manual.caption,
+      isActive: manual.isActive,
+      chapters: Chapters
+    });
   });
 }
 
@@ -201,8 +238,6 @@ exports.manualEditPut = function (req, res) {
     }
   });
 }
-
-
 
 /**
  * PUT /manual/editRM
@@ -349,7 +384,143 @@ exports.manualAddChapterPost = function (req, res) {
   })
 }
 
+// sub
+exports.manualAdicionarSubGet = function (req, res) {
+  const subDoc = req.params.subcaputuloId 
+    ? true
+    : false
 
-// db.manuals.find({$and: [{_id: ObjectId("5b1718032a2db041f580c53c")}, {chapter.$: 66}]}).pretty()
+  const params = {
+    "_id": req.params.id,
+    "chapter._id": req.params.chapID
+  }
 
-// db.manuals.find({chapter: {$elemMatch: {order: 4}}}).pretty() -- use this example to search inside chapters
+  return Manual.findOne(params, { 
+    "chapter.$": 1
+  })
+  .exec(function(err, obj){
+    if(err){
+      req.flash('error', err);
+      res.redirect('/manual/edit/' + req.params.id);
+    }
+
+    res.render('manual/adicionarSub',{
+      cTitle: obj.chapter[0].title,
+      subDoc
+    })
+  })
+}
+
+exports.manualAdicionarSubPut = function (req, res) {
+  const params = {
+    "_id": req.params.id, 
+    "chapter._id":req.params.chapID
+  }
+
+  const { order, title, description } = req.body
+  
+  return Manual.update(
+    params,
+    { $push: { 
+      'chapter.$.subcaputulo': {
+        order,
+        title,
+        description
+      }
+    }
+  }, 
+  
+  function (err, manual) {
+    if (err) {
+      req.flash('error', err);
+      res.redirect('/manual/edit/' + req.params.id);
+    }
+
+    req.flash('success', { msg: 'Subcapítulo adicionado com sucesso !'})
+    res.redirect('/manual/edit/' + req.params.id);
+  })
+}
+
+exports.manualAdicionarSubGetId = function (req, res) {
+  const subDoc = req.params.subcaputuloId 
+    ? true
+    : false
+
+  const params = {
+    "_id": req.params.id,
+    "chapter._id": req.params.chapID,
+  }
+
+  return Manual.findOne(params ,{
+    "chapter.$": 1
+  })
+  .exec(function(err, obj){
+    if(err){
+      req.flash('error', err);
+      res.redirect('/manual/edit/' + req.params.id);
+    }
+
+    const { order, title, description, _id  } = obj.chapter[0].subcaputulo
+      .filter((v) => v._id == req.params.subcaputuloId)[0]
+
+    res.render('manual/adicionarSub',{
+      cTitle: obj.chapter[0].title,
+      subDoc,
+      order,
+      title,
+      description
+    })
+  })
+}
+
+exports.manualAdicionarSubGetIdPost = function (req, res) {
+  const params = {
+    "_id": req.params.id,
+    "chapter._id": req.params.chapID,
+  }
+
+  const { order, title, description, action } = req.body
+
+  if (action === 'delete') {
+    return Manual.update(
+      params,
+      { $pull: {
+        'chapter.$.subcaputulo': {
+          _id: req.params.subcaputuloId
+        }
+      }}, 
+    
+      function(err, done) {
+        if(err) {
+          req.flash('error', err);
+          res.redirect('/manual/edit/' + req.params.id); 
+        }
+
+        req.flash('success', { msg: 'Subcapítulo removido!!' });
+        res.redirect('/manual/edit/' + req.params.id);
+      }
+    )
+  }
+  
+  return Manual.findOne(params, (err, doc) => {
+    doc.chapter[0].subcaputulo.forEach((v, i) => {
+      if (v._id == req.params.subcaputuloId) {
+        v.order = order
+        v.title = title
+        v.description = description
+      }
+    })
+
+    doc.save(function (err) {
+      if(err) {
+        req.flash('error', err);
+        res.redirect('/manual/edit/' + req.params.id)
+        return
+      }
+
+      req.flash('success', { msg: 'Subcapítulo atualizado!' })
+      res.redirect('/manual/edit/' + req.params.id)
+      return
+    })
+  }) 
+}

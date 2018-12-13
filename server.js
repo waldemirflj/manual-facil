@@ -66,7 +66,7 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.get('/', userController.ensureAuthenticated, HomeController.index);
+app.get('/', HomeController.index);
 app.get('/users', userController.ensureAuthenticated, userController.ensureAdmin, userController.usersGet);
 app.get('/users/:filter', userController.ensureAuthenticated, userController.ensureAdmin, userController.usersSearchGet);
 app.post('/users', userController.ensureAuthenticated, userController.ensureAdmin, userController.usersPut);

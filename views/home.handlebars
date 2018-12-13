@@ -1,23 +1,48 @@
+<style>
+  .logo img {
+    margin: 0 auto;
+  }
+
+  @media only screen and (min-width: 768px) {
+    .logo img {
+      width: 50% !important;
+    }
+  }
+
+  @media only screen and (min-width: 1025px)  {
+    .logo img {
+      width: 75% !important;
+    }
+  }
+
+  @media only screen and (max-width: 767px) {
+    .logo img {
+      width: 75% !important;
+    }
+  }
+</style>
+
 <div class="container">
-  {{#if messages.success}}
-    <div class="text-success">
-      {{#each messages.success}}
-        <div>{{msg}}</div>
-      {{/each}}
+  <div class="row">
+    <div class="col-md-4 mt-3 mb-3 logo">
+      <img src="/images/logoFull.png" class="d-block" />
     </div>
-  {{/if}}
-  {{#if messages.error}}
-    <div class="text-danger">
-      {{#each messages.error}}
-        <div>{{msg}}</div>
-      {{/each}}
+    <div class="col-md-8 mt-3 mb-3 conteudo">
+      <div class="mb-5">
+        <h1>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</h1>
+        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Temporibus officiis deserunt libero minus enim assumenda accusamus perferendis velit quae perspiciatis debitis, aliquid aliquam deleniti expedita, quod reprehenderit repudiandae consectetur! Eaque.</p>
+        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Temporibus officiis deserunt libero minus enim assumenda accusamus perferendis velit quae perspiciatis debitis, aliquid aliquam deleniti expedita, quod reprehenderit repudiandae consectetur! Eaque.</p>
+      </div>
+      <div class="mb-5">
+        <h3>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</h3>
+        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Temporibus officiis deserunt libero minus enim assumenda accusamus perferendis velit quae perspiciatis debitis, aliquid aliquam deleniti expedita, quod reprehenderit repudiandae consectetur! Eaque.</p>
+        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Temporibus officiis deserunt libero minus enim assumenda accusamus perferendis velit quae perspiciatis debitis, aliquid aliquam deleniti expedita, quod reprehenderit repudiandae consectetur! Eaque.</p>
+      </div>
+      <div class="mb-5">
+        <h3>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</h3>
+        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Temporibus officiis deserunt libero minus enim assumenda accusamus perferendis velit quae perspiciatis debitis, aliquid aliquam deleniti expedita, quod reprehenderit repudiandae consectetur! Eaque.</p>
+        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Temporibus officiis deserunt libero minus enim assumenda accusamus perferendis velit quae perspiciatis debitis, aliquid aliquam deleniti expedita, quod reprehenderit repudiandae consectetur! Eaque.</p>
+      </div>
     </div>
-  {{/if}}
-  {{#if messages.info}}
-    <div class="text-info">
-      {{#each messages.info}}
-        <div>{{msg}}</div>
-      {{/each}}
-    </div>
-  {{/if}}
+  </div>
 </div>

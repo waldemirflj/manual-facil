@@ -19,19 +19,21 @@
     <h6 class="ml-2 mt-2">{{user.company}}</h6>
     <label class="sr-only" for="email">Email</label>
     <input type="email" class="form-control" name="email" id="email" value="{{user.email}}" placeholder="Email">
+    <br>
     <label class="sr-only" for="name">Nome</label>
     <input type="text" class="form-control" name="name" id="name" value="{{user.name}}" placeholder="Nome">
     <br>
-    <button type="submit" class="btn btn-lg btn-black btn-block">Atualizar dados</button>
+    <button type="submit" class="btn btn-lg btn-black btn-block" style="background-color: #185285; font-weight: bold; color: #fff;">Atualizar dados</button>
   </form>
-
   <form class="form-signin col-md-4 offset-md-4 col-sm-8 offset-sm-2 mt-5" method="POST" action="/account?_method=PUT">
     <h4 class="h3 mb-3 font-weight-normal">Alterar Senha</h4>
     <label class="sr-only" for="password">New Senha</label>
     <input type="password" class="form-control" name="password" id="password" placeholder="Digite a nova senha">
+    <br>
     <label class="sr-only" for="confirm">Confirm Senha</label>
     <input type="password" class="form-control" name="confirm" id="confirm" placeholder="Confirme a nova senha">
     <br>
-    <button type="submit" class="btn btn-lg btn-black btn-block">Alterar Senha</button>
+    <button type="submit" class="btn btn-lg btn-black btn-block" style="background-color: #185285; font-weight: bold; color: #fff;">Alterar senha</button>
   </form>
 </div>
+<br>

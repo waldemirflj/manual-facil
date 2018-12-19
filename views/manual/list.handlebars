@@ -37,9 +37,9 @@
   <img src="/images/logoFull.png" align="center" style="display: block; margin-left: auto; margin-right: auto; width: 220px; margin-top: 30px;"/>
 
   <div class="input-group mb-3">
-    <input type="text" class="form-control" placeholder="Pesquisar" aria-label="Search" onkeyup="document.getElementById('btnSearch').href = '/manual/search/'+this.value">
+    <input type="text" class="form-control" placeholder="Pesquisar" id="buscar" aria-label="Search" id="buscar">
     <div class="input-group-append">
-      <a class="btn btn-outline-dark" style="background-color: #185285; color:#fff; font-weight:bold;" id="btnSearch" href="/manual">Pesquisar</a>
+      <a class="btn btn-outline-dark" style="background-color: #185285; color:#fff; font-weight:bold;" id="btnSearch">Pesquisar</a>
     </div>
   </div>
 
@@ -73,15 +73,29 @@
 </div>
 
 <script>
-  function favorito(id) {
-    $.ajax(`/favorito/${id}` )
-      .done(function(data) {
-        alert(data.msg)
-        location.reload()
-      })
-      .fail(function(error) {
-        console.log(error)
-        alert("Ops! Serviço indisponível, tente mais tarde.")
-      })
-  }
+  $( document ).ready(function() {
+    function favorito(id) {
+      $.ajax(`/favorito/${id}`)
+        .done(function(data) {
+          alert(data.msg)
+          location.reload()
+        })
+        .fail(function(error) {
+          console.log(error)
+          alert("Ops! Serviço indisponível, tente mais tarde.")
+        })
+    }
+
+    $( "#buscar" ).keyup(function(e) {
+      const code = e.which
+      
+      if(code == 13) {
+        window.location = `/manual/search/${this.value}`
+      }
+    })
+
+    $('#btnSearch').click(e => {
+      window.location = `/manual/search/${$( "#buscar" ).val()}`
+    })
+  })
 </script>

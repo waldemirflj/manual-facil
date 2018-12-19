@@ -11,8 +11,9 @@ var userSchema = new mongoose.Schema({
   passwordResetExpires: Date,
   isAdmin: Boolean,
   canPost: Boolean,
-  company: String
-});
+  company: String,
+  favoritos: [],
+}, { usePushEach: true  });
 
 userSchema.pre('save', function(next) {
   var user = this;

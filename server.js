@@ -97,6 +97,9 @@ app.post('/manual/newChapter/:id', userController.ensureAuthenticated, userContr
 app.get('/manual/editChapter/:id/:chapID', userController.ensureAuthenticated, userController.ensureCanPost, manualController.manualEditChapterGet);
 app.post('/manual/editChapter/:id/:chapID', userController.ensureAuthenticated, userController.ensureCanPost, manualController.manualEditChapterPut);
 
+// favorito
+app.get('/favorito/:id', userController.ensureAuthenticated, manualController.favorito);
+
 // sub
 app.get('/manual/editChapter/:id/:chapID/adicionar-sub', userController.ensureAuthenticated, userController.ensureCanPost, manualController.manualAdicionarSubGet);
 app.post('/manual/editChapter/:id/:chapID/adicionar-sub', userController.ensureAuthenticated, userController.ensureCanPost, manualController.manualAdicionarSubPut);

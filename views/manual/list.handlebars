@@ -1,3 +1,24 @@
+<style>
+  .favoritos {
+    border: 0px;
+    display: flex;
+    align-items: center;
+  }
+
+  .favoritos .icone {
+    margin-right: 10px;
+  }
+
+  .favoritos .icone button {
+    border: 0;
+    cursor: pointer;
+  }
+
+  .favoritos .info {
+    cursor: pointer;
+  }
+</style>
+
 <div class="container mt-2 mb-4">
   {{#if messages.success}}
   <div class="text-success">
@@ -13,8 +34,6 @@
   </div>
   {{/if}}
 
-  <!---<h1 class="col-sm-12">Lista de Manuais</h1>-->
-
   <img src="/images/logoFull.png" align="center" style="display: block; margin-left: auto; margin-right: auto; width: 220px; margin-top: 30px;"/>
 
   <div class="input-group mb-3">
@@ -23,15 +42,46 @@
       <a class="btn btn-outline-dark" style="background-color: #185285; color:#fff; font-weight:bold;" id="btnSearch" href="/manual">Pesquisar</a>
     </div>
   </div>
+
   {{#if manual.length}}
-    {{#each manual}}
-    <dl class="row clickable" onclick="location.href='/manual/show/{{_id}}'">
-      <dt class="col-sm-9 pt-2">{{title}}{{#unless isActive}} -- <small style="color:#F55">Inativo</small>{{/unless}}</dt>
-      <dd class="col-sm-9 pb-2">{{caption}}</dd>
-    </dl>
-    {{/each}}
+    <ul style="margin: 0; padding: 0;">
+      {{#each manual }}
+        <li class="favoritos">
+          <div class="icone">
+            <button onclick="favorito('{{_id}}')">
+              {{#if favorito }}
+                <i class="fa fa-star"></i>
+              {{else}}
+                <i class="fa fa-star-o" aria-hidden="true"></i>
+              {{/if}}
+            </button>
+          </div>
+          <div class="info" onclick="location.href='/manual/show/{{_id}}'">
+            {{title}}
+            {{#unless isActive}} -- <small style="color:#F55">Inativo</small>{{/unless}}
+            <br>
+            {{caption}}
+          </div>
+        </li>
+      {{/each}}
+    </ul>
   {{else}}
-  <div>Nenhum manual encontrado.</div>
+    <div>
+      Nenhum manual encontrado.
+    </div>
   {{/if}}
-  <br>
 </div>
+
+<script>
+  function favorito(id) {
+    $.ajax(`/favorito/${id}` )
+      .done(function(data) {
+        alert(data.msg)
+        location.reload()
+      })
+      .fail(function(error) {
+        console.log(error)
+        alert("Ops! Serviço indisponível, tente mais tarde.")
+      })
+  }
+</script>

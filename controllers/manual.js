@@ -1,5 +1,6 @@
 var async = require('async');
 var Manual = require('../models/Manual');
+var User = require('../models/User');
 
 function firstDuplicate(a) {
   console.log('--------------------------');
@@ -20,16 +21,41 @@ function firstDuplicate(a) {
  */
 exports.manualListGet = function (req, res) {
   Manual.find({$or:[{isActive:true}, {created_by:req.user.name}]}, function(err, manual){
-    if(!err){
-      res.render('manual/list', {
-        manual: manual
-      });
-    }else{
+    const _array = []
+    
+    for (let i = 0; i < manual.length; i++) {
+      const _manual = manual[i]
+      const _id = _manual._id
+
+      if (req.user.favoritos.includes(`${_id}`)) {
+        _array.push({
+          _id,
+          title: _manual.title,
+          caption: _manual.caption,
+          isActive: _manual.isActive,
+          favorito: true,
+        })
+      } else {
+        _array.push({
+          _id,
+          title: _manual.title,
+          caption: _manual.caption,
+          isActive: _manual.isActive,
+          favorito: false,
+        })
+      }
+    }
+
+    if(err){
       req.flash('error', err);
       res.render('manual/list', {
-        manual: manual
+        manual: _array
       });
     }
+
+    res.render('manual/list', {
+      manual: _array
+    });
   });
 }
 
@@ -550,4 +576,33 @@ exports.manualAdicionarSubGetIdPost = function (req, res) {
       return
     })
   }) 
+}
+
+/**
+ * POST /favorito/:id
+ */
+exports.favorito = function (req, res) {
+  const userId = req.user.id
+  const favoritoId = req.params.id
+
+  User.findById(userId, function(error, user) {
+    let msg = ''
+
+    if (!user.favoritos.includes(favoritoId)) {
+      user.favoritos.push(favoritoId)
+      msg = 'Favorito adicionado com sucesso.'
+    } else {
+      const filtered = user.favoritos.filter(item => item != favoritoId)
+      user.favoritos = filtered
+      msg = 'Favorito removido com sucesso.'
+    }
+
+    user.save((err) => {
+      if (err) {
+        return res.status(500).json(err)
+      }
+      
+      return  res.status(200).json({ msg })
+    })
+  });
 }

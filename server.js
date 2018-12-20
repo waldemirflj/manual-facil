@@ -84,7 +84,7 @@ app.get('/reset/:token', userController.resetGet);
 app.post('/reset/:token', userController.resetPost);
 app.get('/logout', userController.logout);
 app.get('/manual', userController.ensureAuthenticated, manualController.manualListGet);
-app.get('/manual/search/:filter', userController.ensureAuthenticated, manualController.manualListSearchGet);
+app.get('/manual/search', userController.ensureAuthenticated, manualController.manualListSearchGet);
 app.get('/manual/create', userController.ensureAuthenticated, userController.ensureCanPost, manualController.manualCreateGet);
 app.post('/manual/create', userController.ensureAuthenticated, userController.ensureCanPost, manualController.manualCreatePost);
 app.get('/manual/show/:id', userController.ensureAuthenticated, manualController.manualShowGet);

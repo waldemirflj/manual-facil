@@ -17,6 +17,14 @@
   .favoritos .info {
     cursor: pointer;
   }
+
+  .empresa {
+    width: 250px;
+  }
+
+  .empresa select {
+    border-radius: 0 !important;
+  }
 </style>
 
 <div class="container mt-2 mb-4">
@@ -38,6 +46,16 @@
 
   <div class="input-group mb-3">
     <input type="text" class="form-control" placeholder="Pesquisar" id="buscar" aria-label="Search" id="buscar">
+    <div class="empresa">
+      <select id="empresa" class="form-control">
+        <option value="">Empresa</option>
+        {{!-- <option value="option1">Empresa 1</option> --}}
+        {{!-- <option value="option2">Empresa 2</option> --}}
+        {{#each empresa}}
+          <option value="{{this}}">{{this}}</option>
+        {{/each}}
+      </select>
+    </div>
     <div class="input-group-append">
       <a class="btn btn-outline-dark" style="background-color: #185285; color:#fff; font-weight:bold;" id="btnSearch">Pesquisar</a>
     </div>
@@ -73,29 +91,39 @@
 </div>
 
 <script>
-  $( document ).ready(function() {
-    function favorito(id) {
-      $.ajax(`/favorito/${id}`)
-        .done(function(data) {
-          alert(data.msg)
-          location.reload()
-        })
-        .fail(function(error) {
-          console.log(error)
-          alert("Ops! Serviço indisponível, tente mais tarde.")
-        })
-    }
+  function favorito(id) {
+    $.ajax(`/favorito/${id}`)
+      .done(function(data) {
+        alert(data.msg)
+        location.reload()
+      })
+      .fail(function(error) {
+        console.log(error)
+        alert("Ops! Serviço indisponível, tente mais tarde.")
+      })
+  }
 
+  $( document ).ready(function() {
     $( "#buscar" ).keyup(function(e) {
       const code = e.which
-      
+
       if(code == 13) {
-        window.location = `/manual/search/${this.value}`
+        if (!this.value) {
+          alert('Ops! O campo "pesquisa" está em branco.')
+          return 
+        }
+
+        window.location = `/manual/search/?manual=${this.value}&empresa=${$('#empresa option:checked').val()}`
       }
     })
 
     $('#btnSearch').click(e => {
-      window.location = `/manual/search/${$( "#buscar" ).val()}`
+      if (!$( "#buscar" ).val()) {
+        alert('Ops! O campo "pesquisa" está em branco.')
+        return 
+      }
+
+      window.location = `/manual/search/?manual=${$( "#buscar" ).val()}&empresa=${$('#empresa option:checked').val()}`
     })
   })
 </script>

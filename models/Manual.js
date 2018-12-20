@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 
 var manualSchema = new mongoose.Schema({
   created_by: String,
+  company_by: String,
   company: String,
   isActive: Boolean,
   title: String,

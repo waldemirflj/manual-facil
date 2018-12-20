@@ -21,69 +21,112 @@ function firstDuplicate(a) {
  */
 exports.manualListGet = function (req, res) {
   Manual.find({$or:[{isActive:true}, {created_by:req.user.name}]}, function(err, manual){
-    const _array = []
-    
+    const _arrayDeManuais = []
+    const _arrayDeEmpresas = []
+
     for (let i = 0; i < manual.length; i++) {
       const _manual = manual[i]
       const _id = _manual._id
 
+      if (!_arrayDeEmpresas.includes(`${_manual.company_by}`)) {
+        _arrayDeEmpresas.push(_manual.company_by)
+      }
+
       if (req.user.favoritos.includes(`${_id}`)) {
-        _array.push({
-          _id,
-          title: _manual.title,
-          caption: _manual.caption,
-          isActive: _manual.isActive,
-          favorito: true,
-        })
+        _arrayDeManuais.push(transform(true, _manual))
       } else {
-        _array.push({
-          _id,
-          title: _manual.title,
-          caption: _manual.caption,
-          isActive: _manual.isActive,
-          favorito: false,
-        })
+        _arrayDeManuais.push(transform(false, _manual))
       }
     }
 
     if(err){
       req.flash('error', err);
       res.render('manual/list', {
-        manual: _array
+        manual: _arrayDeManuais,
+        empresa: _arrayDeEmpresas
       });
     }
 
     res.render('manual/list', {
-      manual: _array
+      manual: _arrayDeManuais,
+      empresa: _arrayDeEmpresas
     });
   });
 }
 
+function transform(favorito, manual) {
+  return {
+    _id: manual._id,
+    title: manual.title,
+    caption: manual.caption,
+    isActive: manual.isActive,
+    favorito,
+  }
+}
+
 /*
- * GET /manual/search/:filter
+ * GET /manual/search/?manual=Xyz&empresaXyz
  */
 exports.manualListSearchGet = function(req, res) {
+  let where = []
+  const manual = req.query.manual
+  const empresa = req.query.empresa
+
+  if (!empresa) {
+    where.push(
+      {title: new RegExp(manual, 'i')}, 
+      {caption: new RegExp(manual, 'i')},
+      {chapter: {$elemMatch: {title: new RegExp(manual, 'i')}}},
+      {chapter: {$elemMatch: {description: new RegExp(manual, 'i')}}},
+    )
+  } else {
+    where.push(
+      {title: new RegExp(manual, 'i')}, 
+      {caption: new RegExp(manual, 'i')},
+      {chapter: {$elemMatch: {title: new RegExp(manual, 'i')}}},
+      {chapter: {$elemMatch: {description: new RegExp(manual, 'i')}}},
+      {company_by: new RegExp(empresa, 'i')},
+    )
+  }
+
   Manual.find({
-      $and: [
-        {$or:[{isActive:true}, {created_by:req.user.name}]},
-        { $or:[ 
-          {title: new RegExp(req.params.filter, 'i')}, 
-          {caption: new RegExp(req.params.filter, 'i')},
-          {chapter: {$elemMatch: {title: new RegExp(req.params.filter, 'i')}}},
-          {chapter: {$elemMatch: {description: new RegExp(req.params.filter, 'i')}}},
-        ]}
-      ]}, function(err, manual){
-    if(!err){
+    $and: [
+      {$or: [{isActive:true}, {created_by:req.user.name}]},
+      {$or: where}
+    ]},
+
+    function(err, manual){
+      const _arrayDeManuais = []
+      const _arrayDeEmpresas = []
+
+      for (let i = 0; i < manual.length; i++) {
+        const _manual = manual[i]
+        const _id = _manual._id
+
+        if (!_arrayDeEmpresas.includes(`${_manual.company_by}`)) {
+          _arrayDeEmpresas.push(_manual.company_by)
+        }
+
+        if (req.user.favoritos.includes(`${_id}`)) {
+          _arrayDeManuais.push(transform(true, _manual))
+        } else {
+          _arrayDeManuais.push(transform(false, _manual))
+        }
+      }
+
+      if(err){
+        req.flash('error', err);
+        res.render('manual/list', {
+          manual: _arrayDeManuais,
+          empresa: _arrayDeEmpresas
+        })
+      }
+
       res.render('manual/list', {
-        manual: manual
-      });
-    }else{
-      req.flash('error', err);
-      res.render('manual/list', {
-        manual: manual
-      });
-    }
-  });
+        manual: _arrayDeManuais,
+        empresa: _arrayDeEmpresas
+      })
+    })
 }
 
 /**

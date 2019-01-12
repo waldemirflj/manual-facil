@@ -25,6 +25,11 @@
   .empresa select {
     border-radius: 0 !important;
   }
+
+  .super-azul {
+    color: #185285;
+    background: none;
+  }
 </style>
 
 <div class="container mt-2 mb-4">
@@ -49,8 +54,6 @@
     <div class="empresa">
       <select id="empresa" class="form-control">
         <option value="">Empresa</option>
-        {{!-- <option value="option1">Empresa 1</option> --}}
-        {{!-- <option value="option2">Empresa 2</option> --}}
         {{#each empresa}}
           <option value="{{this}}">{{this}}</option>
         {{/each}}
@@ -66,7 +69,7 @@
       {{#each manual }}
         <li class="favoritos">
           <div class="icone">
-            <button onclick="favorito('{{_id}}')">
+            <button onclick="favorito('{{_id}}')" class="super-azul">
               {{#if favorito }}
                 <i class="fa fa-star"></i>
               {{else}}
@@ -75,10 +78,10 @@
             </button>
           </div>
           <div class="info" onclick="location.href='/manual/show/{{_id}}'">
-            {{title}}
+            <span class="super-azul">{{title}}</span>
             {{#unless isActive}} -- <small style="color:#F55">Inativo</small>{{/unless}}
             <br>
-            {{caption}}
+            <span class="super-azul">{{caption}}</span>
           </div>
         </li>
       {{/each}}

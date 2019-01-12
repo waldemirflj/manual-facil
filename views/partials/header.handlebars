@@ -1,3 +1,15 @@
+<style>
+    .nav-lista {
+        width: 100%;
+        position: relative;
+    }
+
+    .nav-lista li.sair {
+        position: absolute;
+        right: 0;
+    }
+</style>
+
 <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
     <div class="container">
         <button class="navbar-toggler" type="button" onclick="if(getElementById('navbarResponsive').style.display == 'block'){getElementById('navbarResponsive').style.display = 'none';}else{getElementById('navbarResponsive').style.display = 'block';}">
@@ -5,39 +17,41 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarResponsive">
-            <ul class="navbar-nav ml-auto">
-                {{#if user}}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/manual">Manual</a>
-                    </li>
-                    {{#if user.canPost}}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/manual/create">Novo Manual</a>
-                    </li>
-                    {{/if}}
-                    {{#if user.isAdmin}}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/users">Usuários</a>
-                    </li>
-                    {{/if}}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/account">Minha Conta</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/logout">Sair</a>
-                    </li>
-                {{else}}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Página inicial </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/signup">Cadastre-se</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/login">Entrar</a>
-                    </li>
+            {{#if user}}
+            <ul class="navbar-nav nav-lista">
+                <li class="nav-item">
+                    <a class="nav-link" href="/manual">Manual</a>
+                </li>
+                {{#if user.canPost}}
+                <li class="nav-item">
+                    <a class="nav-link" href="/manual/create">Novo Manual</a>
+                </li>
                 {{/if}}
+                {{#if user.isAdmin}}
+                <li class="nav-item">
+                    <a class="nav-link" href="/users">Usuários</a>
+                </li>
+                {{/if}}
+                <li class="nav-item">
+                    <a class="nav-link" href="/account">Minha Conta</a>
+                </li>
+                <li class="nav-item sair">
+                    <a class="nav-link" href="/logout">Sair</a>
+                </li>
             </ul>
+            {{else}}
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Página inicial </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/signup">Cadastre-se</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">Entrar</a>
+                </li>
+            </ul>
+            {{/if}}
         </div>
     </div>
 </nav>

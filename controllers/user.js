@@ -122,9 +122,13 @@ exports.signupPost = function(req, res, next) {
       isAdmin: false,
       canPost: false
     });
+
     user.save(function(err) {
-      req.flash('success', { msg: 'Usuário ' + req.body.email + ' criado com sucesso!'})
-      res.redirect('/signup');
+      passport.authenticate('local', function(err, user, info) {
+        req.logIn(user, function(err) {
+          res.redirect('/manual');
+        });
+      })(req, res, next);
     });
   });
 };

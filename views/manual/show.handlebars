@@ -56,7 +56,11 @@
         <select id="selecionarCapitulo" class="form-control">
           <option>Selecione seu capítulo</option>
           {{#each chapters.data}}
-            <option value="{{ idd }}">{{ title }}</option>
+              <optgroup label="{{ title }}">
+                {{#each subcaputulo}}
+                  <option value="#">{{ title }}</option>
+                {{/each}}
+              </optgroup>
           {{/each}}
         </select>
       </div>

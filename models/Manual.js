@@ -8,11 +8,11 @@ var manualSchema = new mongoose.Schema({
   title: String,
   caption: String,
   chapter: [{
-    order: Number,
+    order: String,
     title: String,
     description: String,
     subcaputulo: [{
-      order: Number,
+      order: String,
       title: String,
       description: String
     }],

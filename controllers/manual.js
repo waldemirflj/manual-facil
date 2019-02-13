@@ -249,16 +249,16 @@ exports.manualEditGet = function (req, res) {
     }
 
     var Chapters = {
-      data:[],
-      subcaputulo: []
+      data:[]
     }
 
     for(var i=0; i < manual.chapter.length; i++){
       const __id = manual.chapter[i]._id
       const manId = manual._id
+      const subcaputulo = []
 
       manual.chapter[i].subcaputulo.forEach((v, i) => {
-        Chapters.subcaputulo.push({
+        subcaputulo.push({
           __id,
           manId,
           _id: v._id,
@@ -274,13 +274,13 @@ exports.manualEditGet = function (req, res) {
         order:manual.chapter[i].order,
         title: manual.chapter[i].title, 
         description: manual.chapter[i].description, 
-        subcaputulo: Chapters.subcaputulo
+        subcaputulo: subcaputulo
       })
     }
 
     Chapters.data = Chapters.data.sort(function(obj1, obj2) {
       return obj1.order - obj2.order
-    });
+    });  
     
     res.render('manual/edit',{
       idd: manual._id,
